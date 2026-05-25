@@ -1,10 +1,11 @@
 require("dotenv").config();
-const fruitRoutes = require("./routes/fruitRoutes");
-const adminRoutes = require("./routes/adminRoutes");
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
 
+const { connectDB } = require("./db"); 
+
+const fruitRoutes = require("./routes/fruitRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 
@@ -15,14 +16,12 @@ app.get("/", (req, res) => {
   res.send("API Running");
 });
 
+// connect DB ONCE
+connectDB();
+
 // Routes
 app.use("/api/fruits", fruitRoutes);
 app.use("/api/admin", adminRoutes);
-
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.log(err, "not connected"));
 
 const PORT = process.env.PORT || 5000;
 
