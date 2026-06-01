@@ -6,9 +6,11 @@ const uploadToCloudinary = require("../utils/uploadToCloudinary");
 const mongoose = require("mongoose");
 const protect = require("../middleware/authMiddleware");
 const cloudinary = require("../config/cloudinary");
+const { connectDB } = require("../utils/db"); 
 
 router.get("/", async (req, res) => {
   try {
+    await connectDB();
     const fruits = await Fruit.find();
     res.json(fruits);
   } catch (err) {
@@ -18,6 +20,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", protect, upload.single("image"), async (req, res) => {
   try {
+    await connectDB();
     if (!req.file) {
       return res.status(400).json({
         message: "Image is required",
@@ -48,7 +51,7 @@ router.post("/", protect, upload.single("image"), async (req, res) => {
 
 router.delete("/:id", protect, async (req, res) => {
   try {
-
+    await connectDB();
     const fruit = await Fruit.findById(req.params.id);
 
     if (!fruit) {
